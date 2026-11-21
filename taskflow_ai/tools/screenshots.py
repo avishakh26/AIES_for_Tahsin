@@ -29,8 +29,13 @@ Theme.apply("dark" if dark else "light")
 w = MainWindow(ctx)
 w.resize(1320, 840)
 w.show()
+from datetime import date, timedelta
+d = date.today()
+while d.weekday() > 4:
+    d += timedelta(days=1)
+w.pages[3].day = d
 for i, (name, _, _) in enumerate(NAV):
     w.go(i)
-    QTest.qWait(350)
+    QTest.qWait(900)
     w.grab().save(str(out / f"{i}_{name.replace(' ', '_')}{'_dark' if dark else ''}.png"))
 print("ok")

@@ -99,13 +99,13 @@ class AnalyticsPage(BasePage):
         ax.bar(labels, [x[1] - x[2] for x in m], bottom=[x[2] for x in m], color=warn, width=0.55, label="Completed late")
         ax2 = ax.twinx()
         ax2.plot(labels, [x[3] for x in m], color=accent, marker="o", linewidth=2, label="Focus hours")
-        ax2.set_ylim(bottom=0)
+        ax2.set_ylim(0, max(1.0, max(x[3] for x in m) * 1.3))
         ax2.tick_params(colors=Theme.color("muted"), labelsize=8, length=0)
         for side in ("top", "right", "left", "bottom"):
             ax2.spines[side].set_visible(False)
         h1, l1 = ax.get_legend_handles_labels()
         h2, l2 = ax2.get_legend_handles_labels()
-        ax.legend(h1 + h2, l1 + l2, frameon=False, fontsize=8, labelcolor=Theme.color("muted"), loc="upper left")
+        ax.legend(h1 + h2, l1 + l2, frameon=False, fontsize=8, labelcolor=Theme.color("muted"), loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3)
         ax.set_yticks(range(0, max(max((x[1] for x in m), default=0), 3) + 1))
         C["monthly"].finish()
 

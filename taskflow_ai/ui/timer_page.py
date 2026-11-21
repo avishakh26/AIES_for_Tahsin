@@ -82,6 +82,8 @@ class TimerPage(BasePage):
         self.seg_group = QButtonGroup(self)
         self.btn_stopwatch = make_button("Stopwatch", "seg")
         self.btn_pomo = make_button("Pomodoro", "seg")
+        self.btn_stopwatch.setMinimumWidth(110)
+        self.btn_pomo.setMinimumWidth(110)
         for i, b in enumerate((self.btn_stopwatch, self.btn_pomo)):
             b.setCheckable(True)
             self.seg_group.addButton(b, i)
@@ -110,7 +112,7 @@ class TimerPage(BasePage):
         ctl.addStretch()
         self.start_btn = make_button("Start", "primary", "play", "", self.start)
         self.pause_btn = make_button("Pause", "", "pause", "", self.pause)
-        self.stop_btn = make_button("Stop & save", "", "stop", "", self.stop)
+        self.stop_btn = make_button("Stop and save", "", "stop", "", self.stop)
         for b in (self.start_btn, self.pause_btn, self.stop_btn):
             b.setMinimumWidth(110)
             ctl.addWidget(b)
@@ -132,7 +134,7 @@ class TimerPage(BasePage):
         self.sessions = QListWidget()
         side.lay.addWidget(self.sessions, 1)
         self.empty = EmptyState("timer", "No sessions yet", "Start the timer to log your first session.")
-        side.lay.addWidget(self.empty)
+        side.lay.addWidget(self.empty, 1)
         body.addWidget(side, 2)
 
         self.ticker = QTimer(self, interval=250)

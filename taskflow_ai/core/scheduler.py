@@ -146,6 +146,8 @@ class Scheduler:
         out = {}
         for t in tasks:
             avail = capacity_hours(params, now, t.deadline) if t.deadline and t.deadline > now else None
+            if avail is not None and avail < 0.05:
+                avail = None  # no working time at all before the deadline: a calendar problem, not a workload one
             out[t.id] = self.priority.evaluate(t, now, avail)
         return out
 

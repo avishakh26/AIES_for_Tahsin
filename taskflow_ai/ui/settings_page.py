@@ -161,6 +161,7 @@ class SettingsPage(BasePage):
         card.title_row(title)
         form = QFormLayout()
         form.setVerticalSpacing(10)
+        form.setFieldGrowthPolicy(QFormLayout.FieldsStayAtSizeHint)
         card.lay.addLayout(form)
         lay.addWidget(card)
         return form

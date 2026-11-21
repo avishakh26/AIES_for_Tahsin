@@ -162,6 +162,7 @@ class StatCard(Card):
 class EmptyState(QWidget):
     def __init__(self, icon_name: str, title: str, text: str = "", parent=None):
         super().__init__(parent)
+        self.setMinimumHeight(150)
         lay = QVBoxLayout(self)
         lay.setAlignment(Qt.AlignCenter)
         lay.setSpacing(6)
