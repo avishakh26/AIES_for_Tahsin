@@ -74,7 +74,8 @@ class Timeline(QWidget):
 
     def rect_of(self, b: Block, dy: float = 0) -> QRectF:
         top, bottom = self.y_of(b.entry.start) + dy, self.y_of(b.entry.end) + dy
-        return QRectF(GUTTER + 6, top + 1, self.width() - GUTTER - 18, max(bottom - top - 2, 14))
+        floor = 0 if b.entry.kind == KIND_BREAK else 14
+        return QRectF(GUTTER + 6, top + 1, self.width() - GUTTER - 18, max(bottom - top - 2, floor))
 
     def block_at(self, pos) -> Optional[Block]:
         for b in reversed(self.blocks):
@@ -122,6 +123,8 @@ class Timeline(QWidget):
         e = b.entry
         base = QColor(b.color)
         if e.kind == KIND_BREAK:
+            if r.height() < 16:
+                return
             p.setPen(QPen(Theme.qcolor("border"), 1, Qt.DashLine))
             p.setBrush(Qt.NoBrush)
             p.drawRoundedRect(r, 6, 6)
@@ -280,7 +283,8 @@ class SchedulePage(BasePage):
     # ---- data ----------------------------------------------------------------------------------------------
     def refresh(self) -> None:
         super().refresh()
-        self.day_label.setText(f"{fmt_date_short(self.day)}  ·  {self.day:%b %d}".replace(" 0", " "))
+        rel = fmt_date_short(self.day)
+        self.day_label.setText((f"{rel}  ·  {self.day:%b %d}" if rel in ("Today", "Tomorrow", "Yesterday") else f"{self.day:%A, %b %d}").replace(" 0", " "))
         self.header.subtitle.setText(self.day.strftime("%A") + ("  (not a working day)" if not ScheduleParams.from_settings(self.ctx.settings).is_workday(self.day) else ""))
         params = ScheduleParams.from_settings(self.ctx.settings)
         entries = self.ctx.schedule.for_day(self.day)

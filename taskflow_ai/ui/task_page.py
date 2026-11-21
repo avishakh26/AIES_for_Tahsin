@@ -68,7 +68,7 @@ class TaskDialog(QDialog):
         self.deadline.setCalendarPopup(True)
         self.deadline.setDisplayFormat("ddd, MMM d yyyy  HH:mm")
         dl = t.deadline or datetime.combine(now().date() + timedelta(days=1), time(17, 0))
-        self.deadline.setDateTime(QDateTime(dl.year, dl.month, dl.day, dl.hour, dl.minute))
+        self.deadline.setDateTime(QDateTime(dl.year, dl.month, dl.day, dl.hour, dl.minute, 0))
         self.has_deadline.setChecked(t.deadline is not None)
         self.deadline.setEnabled(t.deadline is not None)
         self.has_deadline.toggled.connect(self.deadline.setEnabled)
