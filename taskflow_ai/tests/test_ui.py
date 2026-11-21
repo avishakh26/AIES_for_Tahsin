@@ -40,6 +40,11 @@ def win(tmp_path, monkeypatch):
     for p in w.pages:
         if hasattr(p, "ticker"):
             p.ticker.stop()
+    w.hide()
+    w.deleteLater()
+    app.sendPostedEvents(None, 0)
+    from PySide6.QtCore import QEvent
+    app.sendPostedEvents(None, QEvent.DeferredDelete)
     ctx.close()
 
 
@@ -182,6 +187,7 @@ def test_pomodoro_cycle(win):
 
 def test_knowledge_edit_and_save(win):
     k = win.pages[7].rule_tables["priority"]
+    k.ensure_loaded()
     k.table.item(1, 4).setText("true")
     row = next(r for r in range(k.table.rowCount()) if k.table.item(r, 1).text() == "P020")
     k.table.item(row, 6).setText("30")
@@ -195,6 +201,7 @@ def test_knowledge_edit_and_save(win):
 
 def test_knowledge_rejects_invalid_rule(win):
     k = win.pages[7].rule_tables["scheduling"]
+    k.ensure_loaded()
     k.add_rule()
     k.table.item(k.table.rowCount() - 1, 6).setText("not-a-number")
     k.table.cellWidget(k.table.rowCount() - 1, 5).setCurrentText("scale_load")

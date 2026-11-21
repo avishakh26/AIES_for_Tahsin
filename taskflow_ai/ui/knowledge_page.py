@@ -61,7 +61,12 @@ class RuleTable(QWidget):
         row.addWidget(self.save_btn)
         lay.addLayout(row)
         self.dirty = False
-        self.reload()
+        self.loaded = False
+        self.save_btn.setEnabled(False)
+
+    def ensure_loaded(self) -> None:
+        if not self.loaded:
+            self.reload()
 
     def _mark_dirty(self, dirty: bool = True) -> None:
         self.dirty = dirty
@@ -77,6 +82,7 @@ class RuleTable(QWidget):
         for rule in self.ctx.kb.rules(self.name, enabled_only=False):
             self._append(rule)
         self.table.blockSignals(False)
+        self.loaded = True
         self._mark_dirty(False)
 
     def _append(self, rule: Rule) -> None:
@@ -174,6 +180,7 @@ class KnowledgePage(BasePage):
             rt = RuleTable(ctx, name, self)
             self.rule_tables[name] = rt
             self.tabs.addTab(rt, KB_TITLES[name])
+        self.tabs.currentChanged.connect(lambda i: self.tabs.widget(i).ensure_loaded())
         lay.addWidget(self.tabs, 1)
         path_lb = label(f"Files are stored in: {ctx.kb.dir}", "faint")
         path_lb.setTextInteractionFlags(Qt.TextSelectableByMouse)
@@ -181,6 +188,11 @@ class KnowledgePage(BasePage):
 
     def refresh(self) -> None:
         super().refresh()
+        current = self.tabs.currentWidget()
         for rt in self.rule_tables.values():
-            if not rt.dirty:
+            if rt.dirty:
+                continue
+            if rt is current:
                 rt.reload()
+            else:
+                rt.loaded = False  # reload lazily when its tab is opened

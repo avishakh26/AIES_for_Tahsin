@@ -4,7 +4,7 @@ from __future__ import annotations
 import logging
 
 from PySide6.QtCore import QEasingCurve, QPropertyAnimation, Qt, QTimer
-from PySide6.QtGui import QIcon
+from PySide6.QtGui import QIcon, QKeySequence, QShortcut
 from PySide6.QtWidgets import (QApplication, QButtonGroup, QFrame, QGraphicsOpacityEffect, QHBoxLayout, QLabel,
                                QMainWindow, QPushButton, QStackedWidget, QSystemTrayIcon, QVBoxLayout, QWidget)
 
@@ -97,6 +97,7 @@ class MainWindow(QMainWindow):
         self._setup_tray()
         self._connect_signals()
         self.go(0)
+        QShortcut(QKeySequence("Ctrl+N"), self, activated=self.new_task_shortcut)
 
         # autonomous background loop
         self.loop = QTimer(self, interval=60_000)
@@ -210,6 +211,10 @@ class MainWindow(QMainWindow):
         anim.setEasingCurve(QEasingCurve.OutCubic)
         anim.finished.connect(lambda: page.setGraphicsEffect(None))
         anim.start(QPropertyAnimation.DeleteWhenStopped)
+
+    def new_task_shortcut(self) -> None:
+        self.go(1)
+        self.pages[1].new_task()
 
     def toggle_theme(self) -> None:
         new = "light" if Theme.is_dark() else "dark"
