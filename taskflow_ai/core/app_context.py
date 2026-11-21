@@ -53,6 +53,8 @@ class AppContext:
         self.recommender = RecommendationEngine(self.kb)
         self.notifier = NotificationManager(self.tasks, self.schedule, self.settings)
         self.data = DataManager(self.db, data_dir / "backups")
+        self.ui_focus_task: Optional[int] = None      # hand-off between pages (task -> timer / planner)
+        self.ui_planner_task: Optional[int] = None
 
     # ---- tasks ---------------------------------------------------------------------------
     def save_task(self, task: Task, subtasks: Optional[list[Subtask]] = None) -> Task:
