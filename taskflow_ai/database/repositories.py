@@ -42,8 +42,8 @@ class TaskRepository:
                 task.status = STATUS_IN_PROGRESS
 
     def add(self, task: Task) -> Task:
-        self._normalise(task)
         validate_task(task)
+        self._normalise(task)
         cur = self.db.execute(
             """INSERT INTO tasks (title, description, category, priority, importance, estimated_minutes,
                deadline, preferred_start, status, completion, created_at, completed_at, actual_seconds)
@@ -58,8 +58,8 @@ class TaskRepository:
     def update(self, task: Task) -> Task:
         if task.id is None:
             raise ValidationError("Cannot update a task without an id.")
-        self._normalise(task)
         validate_task(task)
+        self._normalise(task)
         self.db.execute(
             """UPDATE tasks SET title=?, description=?, category=?, priority=?, importance=?,
                estimated_minutes=?, deadline=?, preferred_start=?, status=?, completion=?,
